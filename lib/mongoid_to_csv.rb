@@ -11,7 +11,11 @@ module MongoidToCSV
 
   module_function
 
-  def documents_to_csv(documents, fields = documents.first.class.fields)
+  def documents_to_csv(documents, fields = nil)
+    return documents.to_csv unless documents.first.class.respond_to? :fields
+    
+    fields ||= documents.first.class.fields
+    
     doc_class = documents.first.class
     csv_columns = fields.keys - %w{_id created_at updated_at _type}
     header_row = csv_columns.to_csv
